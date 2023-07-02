@@ -37,8 +37,14 @@ const SignupPage = () => {
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/signup`, {
         username,
         password,
+        email,
+        phoneNumber,
       });
       console.log("Signup successful:", response.data);
+
+      if (response.status === 400) {
+        setError("Username already exists");
+      }
       // Handle successful signup, e.g., redirect to another page
     } catch (error) {
       console.error("Signup Error:", error);

@@ -112,7 +112,7 @@ const FileUpload = () => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${filename}.xlsx`; // Set the desired filename
+        link.download = `${fileName}.xlsx`; // Set the desired filename
         link.click();
 
       } catch (error) {
