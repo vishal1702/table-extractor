@@ -1,38 +1,77 @@
 .App {
   text-align: center;
+  margin: 100px auto;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.errorMessage {
+  margin: 10px auto;
+  color: red;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.successMessage {
+  margin: 10px auto;
+  color: green;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  justify-content: center;
+  display: flex;
+  margin: auto;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.custom-table th {
+  font-weight: bold;
+}
+
+.custom-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.errorMessage1 {
+  color: red;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.login-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 200px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
 }
