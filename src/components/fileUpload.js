@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import * as XLSX from 'xlsx'
+import * as XLSX from 'xlsx';
+
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('loginToken')}`;
 
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -91,25 +93,9 @@ const FileUpload = () => {
     }
   };
 
-  const tableData1 = [
-    {
-      status: 400,
-      documentId: null,
-      message:
-        "Given document Design and specification document for an XR system.docx is not pdf.",
-      documentName: "file.pdf",
-    },
-    {
-      status: 200,
-      documentId: "8542c035-c2e4-4898-a1f9-659c2ee4d4fe",
-      message:
-        "Design and specification document for an XR system.pdf has been uploaded successfully.",
-      documentName: "file1.pdf",
-    },
-  ];
-
-  const handleDownload = async (id) => {
+  const handleDownload = async (id, filename) => {
     const documentID = id;
+    const fileName = filename;
 
     if (documentID) {
       try {
@@ -126,7 +112,7 @@ const FileUpload = () => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'filename.xlsx'; // Set the desired filename
+        link.download = `${filename}.xlsx`; // Set the desired filename
         link.click();
 
       } catch (error) {
@@ -167,10 +153,10 @@ const FileUpload = () => {
             <tbody>
               {tableData.map((row) => (
                 <tr key={row.documentId}>
-                  <td>{row.message.substring(0, row.message.indexOf('.pdf'))}</td>
+                  <td>{row.filename}</td>
                   <td>
                     {row.status === 200 ? (
-                      <button onClick={() => handleDownload(row.documentId)}>
+                      <button onClick={() => handleDownload(row.documentId, row.filename)}>
                         Download
                       </button>
                     ) : (
