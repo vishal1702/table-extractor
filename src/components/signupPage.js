@@ -6,7 +6,7 @@ const SignupPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setphone] = useState("");
   const [error, setError] = useState("");
 
   const handleUsernameChange = (e) => {
@@ -21,8 +21,8 @@ const SignupPage = () => {
     setEmail(e.target.value || "");
   }
 
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value || "");
+  const handlephoneChange = (e) => {
+    setphone(e.target.value || "");
   }
 
   const handleSubmit = async (e) => {
@@ -33,21 +33,30 @@ const SignupPage = () => {
       return;
     }
 
+    const payload = {
+      username,
+      password,
+      email,
+      phone,
+    }
+
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/signup`, {
-        username,
-        password,
-        email,
-        phoneNumber,
-      });
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/signup`,  payload ,
+      {
+        headers: {
+          "Authorization": "",
+        }
+      }
+      );
       console.log("Signup successful:", response.data);
 
       if (response.status === 400) {
         setError("Username already exists");
-      }
+      } 
       // Handle successful signup, e.g., redirect to another page
     } catch (error) {
       console.error("Signup Error:", error);
+      setError("Something went wrong! Try again later.");
       // Handle signup error, e.g., display an error message
     }
   };
@@ -86,17 +95,17 @@ const SignupPage = () => {
             />
           </div>
           <div className="formFields">
-            <label htmlFor="phoneNumber">Phone Number:</label>
+            <label htmlFor="phone">Phone Number:</label>
             <input
               type="text"
-              id="phoneNumber"
-              value={phoneNumber}
-              onChange={handlePhoneNumberChange}
+              id="phone"
+              value={phone}
+              onChange={handlephoneChange}
             />
           </div>
           <button type="submit">Signup</button>
         </form>
-        {error && <p>{error}</p>}
+        {error && <p className="error">{error}</p>}
       </div>
     </div>
   );
