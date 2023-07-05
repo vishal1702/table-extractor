@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import * as XLSX from 'xlsx';
+import { downloadExcelFile } from '../services/generic';
 
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('loginToken')}`;
+// axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('loginToken')}`;
 
 const FileUpload = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -13,6 +13,7 @@ const FileUpload = () => {
   const [tableData, setTableData] = useState([]);
 
   const handleFileChange = (event) => {
+    setFileDownloadErrorMessage("");
     const files = event.target.files;
     const allowedTypes = ["application/pdf"];
     const maxFileSize = 10 * 1024 * 1024; // 10MB
@@ -72,9 +73,8 @@ const FileUpload = () => {
         }
       );
 
-      console.log(response.data);
-
       if (response.status === 200) {
+        setFileDownloadErrorMessage("");
         setSelectedFiles([]);
         setTableData(response.data);
         setErrorMessage("");
@@ -95,32 +95,31 @@ const FileUpload = () => {
 
   const handleDownload = async (id, filename) => {
     const documentID = id;
-    const fileName = filename;
+    const fileName = filename.substring(0, filename.indexOf(".pdf"));
 
     if (documentID) {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_BASE_URL}/document/download/excel?ref_id=${documentID}`,
-          { responseType: "arraybuffer" }
         );
-        const excelBuffer = response.data;
-        console.log(excelBuffer);
-
-        const workbook = XLSX.read(excelBuffer, { type: 'array' });
-        const excelData = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-        const blob = new Blob([excelData], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${fileName}.xlsx`; // Set the desired filename
-        link.click();
-
+        console.log(response);
+        if (response.status === 200) {
+          const byteArray = response.data.fileByte;
+          const filename = `${fileName}.xlsx`;
+          downloadExcelFile(byteArray, filename);
+        } 
+        else {
+          setFileDownloadErrorMessage("Cannot download the file. No tables found in the file.");
+          setIsSuccess(false);
+        }
+        
       } catch (error) {
         setFileDownloadErrorMessage("Something went wrong. Try again later!");
         setIsSuccess(false);
       }
     }
   };
+
 
   return (
     <div className="container">
@@ -155,13 +154,7 @@ const FileUpload = () => {
                 <tr key={row.documentId}>
                   <td>{row.filename}</td>
                   <td>
-                    {row.status === 200 ? (
-                      <button onClick={() => handleDownload(row.documentId, row.filename)}>
-                        Download
-                      </button>
-                    ) : (
-                      "Cannot download the file"
-                    )}
+                    {<button onClick={() => handleDownload(row.documentId, row.filename)}>Download</button>}
                   </td>
                 </tr>
               ))}

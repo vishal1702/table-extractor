@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import Header from "./header";
 
-// axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('loginToken')}`;
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -36,11 +35,9 @@ const LoginPage = () => {
             }
           });
           
-        console.log(response);
-
+        // console.log(response);
         if (response.data.status === 200) {
           // Save the login token in localStorage
-          console.log(response);
           localStorage.setItem("loginToken", response.data.token);
 
           // If login is successful, redirect to the user page
