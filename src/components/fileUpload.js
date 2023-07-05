@@ -93,10 +93,10 @@ const FileUpload = () => {
     }
   };
 
-  const handleDownload = async (id, filename) => {
+  const handleDownload = async (id) => {
     const documentID = id;
-    const fileName = filename.substring(0, filename.indexOf(".pdf"));
-
+    // const fileName = filename.substring(0, filename.indexOf(".xlsx"));
+    
     if (documentID) {
       try {
         const response = await axios.get(
@@ -104,9 +104,10 @@ const FileUpload = () => {
         );
         console.log(response);
         if (response.status === 200) {
-          const byteArray = response.data.fileByte;
-          const filename = `${fileName}.xlsx`;
-          downloadExcelFile(byteArray, filename);
+          const byteArray = response.data.fileBase64;
+          console.log(response.data.filename);
+          const fileName = response.data.filename.substring(0, response.data.filename.indexOf(".xlsx"));
+          downloadExcelFile(byteArray, fileName);
         } 
         else {
           setFileDownloadErrorMessage("Cannot download the file. No tables found in the file.");
@@ -154,7 +155,7 @@ const FileUpload = () => {
                 <tr key={row.documentId}>
                   <td>{row.filename}</td>
                   <td>
-                    {<button onClick={() => handleDownload(row.documentId, row.filename)}>Download</button>}
+                    {<button onClick={() => handleDownload(row.documentId)}>Download</button>}
                   </td>
                 </tr>
               ))}
